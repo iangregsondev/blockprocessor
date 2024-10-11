@@ -1,0 +1,12 @@
+version: '3'
+
+tasks:
+  start:bitcoin-precessor:
+    desc: Start the Bitcoin processor
+    cmds:
+      - task: build:bitcoin-precessor
+      - ./build/services/bitcoin-processor/bitcoin-processor --config ./dev/config/bitcoin-processor --env ./dev/config
+  build:bitcoin-precessor:
+    desc: Build the Bitcoin processor
+    cmds:
+      - go build -o ./build/services/bitcoin-processor/bitcoin-processor ./cmd/bitcoinprocessor/main.go

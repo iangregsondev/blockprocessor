@@ -1,0 +1,24 @@
+with-expecter: True
+inpackage: False
+dir: "{{.InterfaceDir}}/mock"
+mockname: "Mock{{.InterfaceName}}"
+outpkg: "{{.PackageName}}"
+filename: >
+  {{- $suffix := "" -}}
+  {{- if (hasSuffix .InterfaceFile "_windows.go") -}}
+    {{- $suffix = "_windows" -}}
+  {{- else if (hasSuffix .InterfaceFile "_darwin.go") -}}
+    {{- $suffix = "_darwin" -}}
+  {{- else if (hasSuffix .InterfaceFile "_linux.go") -}}
+    {{- $suffix = "_linux" -}}
+  {{- end -}}
+  mock_{{.InterfaceName}}{{$suffix}}.go{{- "" -}}
+all: True
+include-auto-generated: False
+packages:
+  github.com/iangregsondev/deblockprocessor:
+    config:
+      recursive: True
+
+
+

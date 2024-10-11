@@ -1,0 +1,50 @@
+version: '3'
+
+tasks:
+  test:
+    cmds:
+      - richgo test ./...
+  lint:
+    cmds:
+      - golangci-lint run --new-from-rev HEAD
+  lint:allfiles:
+    cmds:
+      - golangci-lint run
+  precommit:
+    cmds:
+      - pre-commit run --all-files  
+  clean-mocks:
+    cmds:
+      - echo "Removing mock files"
+      - >-
+        {{if eq OS "windows"}}
+        powershell -Command "Get-ChildItem -Path . -Recurse -Filter 'mock_*.go' | Remove-Item -Force"
+        {{else}}
+        sudo find . -type f -name 'mock_*.go' -exec rm {} +
+        {{end}}         
+  gen-mocks:
+    cmds:
+      - task: gen-mocks-windows
+      - task: gen-mocks-darwin
+      - task: gen-mocks-linux
+
+  gen-mocks-windows:
+    cmds:
+      - echo "Generating mock files for Windows"
+      - mockery
+    env:
+      GOOS: windows
+
+  gen-mocks-darwin:
+    cmds:
+      - echo "Generating mock files for Darwin"
+      - mockery
+    env:
+      GOOS: darwin
+
+  gen-mocks-linux:
+    cmds:
+      - echo "Generating mock files for Linux"
+      - mockery
+    env:
+      GOOS: linux
