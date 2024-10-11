@@ -1,0 +1,123 @@
+linters:
+  # Disable all linters.
+  # Default: false
+  disable-all: true
+  # Enable specific linter
+  enable:
+    - asasalint
+    - asciicheck
+    - bidichk
+    - bodyclose
+    - canonicalheader
+    - containedctx
+    - contextcheck
+    - copyloopvar
+    - decorder
+    - dogsled
+    - dupl
+    - dupword
+    - durationcheck
+    - errcheck
+    - errchkjson
+    - errname
+    - errorlint
+    - exhaustive
+    - fatcontext
+    - forbidigo
+    - forcetypeassert
+    - funlen
+    - gci
+    - ginkgolinter
+    - gocheckcompilerdirectives
+    - gochecknoinits
+    - gochecksumtype
+    - goconst
+    - gocritic
+    - gocyclo
+    - gofmt
+    - goheader
+    - gomoddirectives
+    - gomodguard
+    - goprintffuncname
+    - gosimple
+    - gosmopolitan
+    - govet
+    - grouper
+    - importas
+    - inamedparam
+    - ineffassign
+    - interfacebloat
+    - intrange
+    - lll
+    - loggercheck
+    - maintidx
+    - makezero
+    - mirror
+    - misspell
+    - mnd
+    - nakedret
+    - nilerr
+    - nilnil
+    - nlreturn
+    - noctx
+    - nolintlint
+    - nosprintfhostport
+    - paralleltest
+    - predeclared
+    - promlinter
+    - protogetter
+    - reassign
+    - revive
+    - rowserrcheck
+    - sloglint
+    - spancheck
+    - sqlclosecheck
+    - staticcheck
+    - stylecheck
+    - tenv
+    - testableexamples
+    - testifylint
+    - testpackage
+    - thelper
+    - tparallel
+    - unconvert
+    - unparam
+    - unused
+    - usestdlibvars
+    - wastedassign
+    - whitespace
+    - wsl
+    - zerologlint
+
+linters-settings:
+  funlen:
+    # Checks the number of lines in a function.
+    # If lower than 0, disable the check.
+    # Default: 60
+    lines: 100
+    # Checks the number of statements in a function.
+    # If lower than 0, disable the check.
+    # Default: 40
+    statements: -1
+    # Ignore comments when counting lines.
+    # Default false
+    ignore-comments: true
+  lll:
+    # Max line length, lines longer will be reported.
+    # '\t' is counted as 1 character by default, and can be changed with the tab-width option.
+    # Default: 120.
+    line-length: 180
+    # Tab width in spaces.
+    # Default: 1
+    tab-width: 1
+  wsl:
+    # Allow blocks to end with comments.
+    # https://github.com/bombsimon/wsl/blob/master/doc/configuration.md#allow-trailing-comment
+    # Default: false
+    allow-trailing-comment: true
+    
+issues:
+  exclude-rules:
+    - path: .*_test.go
+      linters:
+        - funlen

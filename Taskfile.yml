@@ -1,0 +1,12 @@
+version: '3'
+
+includes:
+  app:
+    taskfile: ./cmd/Taskfile.yml  
+  common:
+    taskfile: ./TaskfileCommon.yml
+  infra:
+    dir: ./infra
+    taskfile: ./infra/Taskfile.yml    
+  provision:
+    taskfile: ./TaskfileProvision.yml

@@ -1,0 +1,20 @@
+networks:
+  deblock-external-network:
+    driver: bridge
+
+services:
+  bitcoin-processor:
+    build:
+      context: ../../
+      dockerfile: build/docker/bitcoin-processor/Dockerfile
+    image: bitcoin-processor:latest
+    restart: unless-stopped
+    env_file:
+      - ../../dev/config/.env.local
+      - ../../dev/config/bitcoin-processor/.env.local
+    command: ["--config", "./config"]
+    volumes:
+      - ../../dev/config/bitcoin-processor:/app/config
+      - ../../dev/data/bitcoin-processor:/dev/data/bitcoin-processor
+    networks:
+      - deblock-external-network

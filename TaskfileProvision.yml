@@ -1,0 +1,28 @@
+version: '3'
+
+tasks:
+  setup:
+    desc: Setup development environment
+    cmds:
+      - task: install-precommit
+      - task: install-golangci-lint
+      - task: install-mockery
+      - task: configure-precommit        
+  install-golangci-lint:
+    desc: Install golangci-lint
+    cmds:
+      - go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.59.1
+  install-precommit:
+    desc: Install pre-commit
+    cmds:
+      - pipx install pre-commit==3.8.0 --force
+      - pre-commit autoupdate
+  install-mockery:
+    desc: Install mockery
+    cmds:
+      - go install github.com/vektra/mockery/v2@v2.43.2  
+  configure-precommit:
+    desc: Setup git hook scripts for pre-commit
+    cmds:
+      - pre-commit install
+

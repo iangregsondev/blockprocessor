@@ -1,0 +1,17 @@
+version: '3'
+
+tasks:
+  docker-up:
+    desc: Bring docker services up and detach
+    cmds:
+      - docker compose -f ./docker/docker-compose.yml up
+  docker-down:
+    desc: Take docker services down
+    cmds:
+      - docker compose -f ./docker/docker-compose.yml down 
+  init-local-dev-env:
+    desc: Initialize local development environment
+    cmds:
+      - ./init-environment.sh
+
+

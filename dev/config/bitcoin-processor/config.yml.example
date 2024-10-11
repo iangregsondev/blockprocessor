@@ -1,0 +1,16 @@
+polling:
+  block_interval_milliseconds: 1000
+  height_interval_milliseconds: 1000
+
+blockchain:
+  height: 865104
+  
+database:
+  file: "dev/data/bitcoin-processor/bitcoin-processor.db"
+
+kafka:
+  broker: "kafka:9092"
+
+connection:
+  rpc_url: "https://svc.blockdaemon.com/bitcoin/mainnet/native/"
+  api_key: ""
