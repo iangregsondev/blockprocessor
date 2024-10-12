@@ -46,3 +46,31 @@ func (p *Provider) GetBlockByNumber(ctx context.Context, blockNumberHex string, 
 
 	return &resp, nil
 }
+
+func (p *Provider) GetBlockByHash(ctx context.Context, blockHash string, fullTransaction bool) (*response.BlockByHashResponse, error) {
+	result, err := p.rpcClient.Request(ctx, "eth_getBlockByHash", []interface{}{blockHash, fullTransaction})
+	if err != nil {
+		return nil, fmt.Errorf("failed to get block by hash: %w", err)
+	}
+
+	var resp response.BlockByHashResponse
+	if err := json.Unmarshal(result, &resp); err != nil {
+		return nil, fmt.Errorf("failed to parse block by hash: %w", err)
+	}
+
+	return &resp, nil
+}
+
+func (p *Provider) GetTransactionByHash(ctx context.Context, transactionHash string) (*response.TransactionByHashResponse, error) {
+	result, err := p.rpcClient.Request(ctx, "eth_getTransactionByHash", []interface{}{transactionHash})
+	if err != nil {
+		return nil, fmt.Errorf("failed to get transaction by hash: %w", err)
+	}
+
+	var resp response.TransactionByHashResponse
+	if err := json.Unmarshal(result, &resp); err != nil {
+		return nil, fmt.Errorf("failed to parse transaction by hash: %w", err)
+	}
+
+	return &resp, nil
+}

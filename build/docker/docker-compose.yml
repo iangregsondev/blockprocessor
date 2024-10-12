@@ -3,6 +3,7 @@ networks:
     driver: bridge
 
 services:
+  # Bitcoin
   bitcoin-block-processor:
     build:
       context: ../../
@@ -31,6 +32,37 @@ services:
     command: ["--config", "./config"]
     volumes:
       - ../../dev/config/bitcoin-transaction-processor:/app/config
-      - ../../dev/data/bitcoin-transaction-processor:/dev/data/bitcoin-transaction-processor
+    networks:
+      - deblock-external-network
+
+  # Ethereum
+  ethereum-block-processor:
+    build:
+      context: ../../
+      dockerfile: build/docker/ethereum/block-processor/Dockerfile
+    image: ethereum-block-processor:latest
+    restart: unless-stopped
+    env_file:
+      - ../../dev/config/.env.local
+    #      - ../../dev/config/ethereum-block-processor/.env.local
+    command: ["--config", "./config"]
+    volumes:
+      - ../../dev/config/ethereum-block-processor:/app/config
+      - ../../dev/data/ethereum-block-processor:/dev/data/bitcoin-block-processor
+    networks:
+      - deblock-external-network
+
+  ethereum-transaction-processor:
+    build:
+      context: ../../
+      dockerfile: build/docker/ethereum/transaction-processor/Dockerfile
+    image: ethereum-transaction-processor:latest
+    restart: unless-stopped
+    env_file:
+      - ../../dev/config/.env.local
+    #      - ../../dev/config/ethereum-transaction-processor/.env.local
+    command: ["--config", "./config"]
+    volumes:
+      - ../../dev/config/ethereum-transaction-processor:/app/config
     networks:
       - deblock-external-network
