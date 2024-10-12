@@ -6,13 +6,16 @@ import (
 	"github.com/ggwhite/go-masker/v2"
 	"github.com/iangregsondev/deblockprocessor/internal/adapters/kafka"
 	"github.com/iangregsondev/deblockprocessor/internal/adapters/rpc"
-	"github.com/iangregsondev/deblockprocessor/internal/bitcoin/transactionprocessor/app"
-	"github.com/iangregsondev/deblockprocessor/internal/bitcoin/transactionprocessor/config"
-	"github.com/iangregsondev/deblockprocessor/internal/bitcoin/transactionprocessor/services/transaction"
+	"github.com/iangregsondev/deblockprocessor/internal/ethereum/blockprocessor/adapters/sqlite"
+	"github.com/iangregsondev/deblockprocessor/internal/ethereum/blockprocessor/app"
+	"github.com/iangregsondev/deblockprocessor/internal/ethereum/blockprocessor/config"
+	"github.com/iangregsondev/deblockprocessor/internal/ethereum/blockprocessor/repository/block"
+	"github.com/iangregsondev/deblockprocessor/internal/ethereum/blockprocessor/services/blockchain"
+	"github.com/iangregsondev/deblockprocessor/internal/ethereum/blockprocessor/services/database"
 	iowrapper "github.com/iangregsondev/deblockprocessor/internal/wrappers/io"
 	"github.com/iangregsondev/deblockprocessor/internal/wrappers/logger"
 	oswrapper "github.com/iangregsondev/deblockprocessor/internal/wrappers/os"
-	"github.com/iangregsondev/deblockprocessor/pkg/blockchainproviders/bitcoin/blockdaemon"
+	"github.com/iangregsondev/deblockprocessor/pkg/blockchainproviders/ethereum/blockdaemon"
 )
 
 func NewDI(logger logger.Logger, mask *masker.MaskerMarshaler, ioWrapper iowrapper.IO, osWrapper oswrapper.OS, cfg *config.Config) (*app.App, error) {
@@ -39,6 +42,7 @@ func NewDI(logger logger.Logger, mask *masker.MaskerMarshaler, ioWrapper iowrapp
 	logger.SetLogLevel(level)
 
 	// instantiate adapters
+	dbAdapter := sqlite.NewSqliteDatabase(osWrapper, loadedConfig.Database.File)
 	rpcClient := rpc.NewRPC(
 		logger, ioWrapper, loadedConfig.Connection.RPCURL, loadedConfig.Connection.APIKey, loadedConfig.HTTP.MaxRetryOnError,
 		loadedConfig.HTTP.RetryDelayMilliseconds,
@@ -48,13 +52,18 @@ func NewDI(logger logger.Logger, mask *masker.MaskerMarshaler, ioWrapper iowrapp
 	// provider
 	bcProvider := blockdaemon.NewProvider(rpcClient)
 
+	// repositories
+	blockRepository := block.NewBlockRepository(dbAdapter)
+
 	// instantiate services
-	transactionService := transaction.NewService(
-		logger, kafkaAdapter, bcProvider,
-		loadedConfig.Connection.RPCURL, loadedConfig.Connection.APIKey, loadedConfig.Kafka.BlockTopic, loadedConfig.Kafka.BlockConsumerGroup,
-		loadedConfig.Kafka.TransactionTopic,
+	databaseService := database.NewService(dbAdapter)
+
+	blockchainService := blockchain.NewService(
+		logger, blockRepository, kafkaAdapter, bcProvider,
+		loadedConfig.Blockchain.SeedBlockNumber, loadedConfig.Polling.HeightIntervalMilliseconds, loadedConfig.Polling.BlockIntervalMilliseconds,
+		loadedConfig.Connection.RPCURL, loadedConfig.Connection.APIKey, loadedConfig.Kafka.Topic,
 	)
 
 	// return the application
-	return app.NewApp(logger, mask, osWrapper, loadedConfig, transactionService), nil
+	return app.NewApp(logger, mask, osWrapper, loadedConfig, blockchainService, databaseService), nil
 }

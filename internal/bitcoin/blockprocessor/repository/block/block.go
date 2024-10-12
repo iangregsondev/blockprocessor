@@ -2,9 +2,9 @@ package block
 
 import (
 	"errors"
+
 	"github.com/iangregsondev/deblockprocessor/internal/bitcoin/blockprocessor/adapters/sqlite"
 	"github.com/iangregsondev/deblockprocessor/internal/bitcoin/blockprocessor/entities"
-
 	"gorm.io/gorm"
 )
 

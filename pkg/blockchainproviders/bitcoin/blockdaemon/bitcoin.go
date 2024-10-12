@@ -5,8 +5,8 @@ import (
 	"encoding/json"
 	"fmt"
 
+	"github.com/iangregsondev/deblockprocessor/internal/adapters/rpc"
 	"github.com/iangregsondev/deblockprocessor/pkg/blockchainproviders/bitcoin/models/response"
-	"github.com/iangregsondev/deblockprocessor/pkg/rpc"
 )
 
 type Provider struct {

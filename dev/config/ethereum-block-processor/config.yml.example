@@ -6,11 +6,12 @@ blockchain:
   seed_block_number: 865104
   
 database:
-  file: "dev/data/bitcoin-block-processor/bitcoin-block-processor.db"
+  file: "dev/data/ethereum-block-processor/ethereum-block-processor.db"
 
 kafka:
   broker: "kafka:9092"
+  topic: "ethereum-blocks"
 
 connection:
-  rpc_url: "https://svc.blockdaemon.com/bitcoin/mainnet/native/"
+  rpc_url: "https://svc.blockdaemon.com/ethereum/mainnet/native/"
   api_key: ""

@@ -5,7 +5,7 @@ import (
 	"os"
 	"os/signal"
 
-	"github.com/iangregsondev/deblockprocessor/pkg/logger"
+	"github.com/iangregsondev/deblockprocessor/internal/wrappers/logger"
 )
 
 type Worker func(ctx context.Context)

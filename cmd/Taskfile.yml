@@ -1,6 +1,7 @@
 version: '3'
 
 tasks:
+  # Bitcoin
   start:bitcoin-block-processor:
     desc: Start the Bitcoin block processor
     cmds:
@@ -10,6 +11,10 @@ tasks:
     desc: Build the Bitcoin block processor
     cmds:
       - go build -o ./build/services/bitcoin-block-processor/bitcoin-block-processor ./cmd/bitcoin/blockprocessor/main.go
+  delete:database:bitcoin-block-processor:
+    desc: Delete the Bitcoin block processor database
+    cmds:
+      - rm -f ./dev/data/bitcoin-block-processor/bitcoin-block-processor.db
 
   start:bitcoin-transaction-processor:
     desc: Start the Bitcoin transaction processor
@@ -20,3 +25,37 @@ tasks:
     desc: Build the Bitcoin transaction processor
     cmds:
       - go build -o ./build/services/bitcoin-transaction-processor/bitcoin-transaction-processor ./cmd/bitcoin/transactionprocessor/main.go
+  delete:database:bitcoin-transaction-processor:
+    desc: Delete the Bitcoin transaction processor database
+    cmds:
+      - rm -f ./dev/data/bitcoin-transaction-processor/bitcoin-transaction-processor.db
+
+  # Ethereum        
+  start:ethereum-block-processor:
+    desc: Start the Ethereum block processor
+    cmds:
+      - task: build:ethereum-block-processor
+      - ./build/services/ethereum-block-processor/ethereum-block-processor --config ./dev/config/ethereum-block-processor --env ./dev/config
+  build:ethereum-block-processor:
+    desc: Build the Ethereum block processor
+    cmds:
+      - go build -o ./build/services/ethereum-block-processor/ethereum-block-processor ./cmd/ethereum/blockprocessor/main.go
+  delete:database:ethereum-block-processor:
+    desc: Delete the Ethereum block processor database
+    cmds:
+      - rm -f ./dev/data/ethereum-block-processor/ethereum-block-processor.db
+        
+  # Common
+  start:all:
+    desc: Start all processors
+    deps:
+      - task: start:bitcoin-block-processor
+      - task: start:bitcoin-transaction-processor
+      - task: start:ethereum-block-processor
+  
+  delete:database:all:
+    desc: Delete all databases
+    cmds:
+      - task: delete:database:bitcoin-block-processor
+      - task: delete:database:bitcoin-transaction-processor
+      - task: delete:database:ethereum-block-processor        

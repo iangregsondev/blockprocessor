@@ -7,7 +7,7 @@ import (
 	"log"
 	"sync"
 
-	"github.com/iangregsondev/deblockprocessor/pkg/logger"
+	"github.com/iangregsondev/deblockprocessor/internal/wrappers/logger"
 	"github.com/segmentio/kafka-go"
 )
 

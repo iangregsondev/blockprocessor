@@ -9,9 +9,9 @@ import (
 	"github.com/iangregsondev/deblockprocessor/internal/adapters/kafka"
 	"github.com/iangregsondev/deblockprocessor/internal/bitcoin/transactionprocessor/models/config"
 	"github.com/iangregsondev/deblockprocessor/internal/bitcoin/transactionprocessor/services/transaction"
+	"github.com/iangregsondev/deblockprocessor/internal/signalutils"
+	"github.com/iangregsondev/deblockprocessor/internal/wrappers/logger"
 	oswrapper "github.com/iangregsondev/deblockprocessor/internal/wrappers/os"
-	"github.com/iangregsondev/deblockprocessor/pkg/logger"
-	"github.com/iangregsondev/deblockprocessor/pkg/signalutils"
 )
 
 type App struct {

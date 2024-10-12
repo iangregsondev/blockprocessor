@@ -8,8 +8,8 @@ import (
 
 	"github.com/go-playground/validator/v10"
 	"github.com/iangregsondev/deblockprocessor/internal/bitcoin/transactionprocessor/models/config"
+	"github.com/iangregsondev/deblockprocessor/internal/wrappers/logger"
 	oswrapper "github.com/iangregsondev/deblockprocessor/internal/wrappers/os"
-	"github.com/iangregsondev/deblockprocessor/pkg/logger"
 	"github.com/joho/godotenv"
 	"github.com/spf13/viper"
 )

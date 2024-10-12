@@ -3,6 +3,7 @@ module github.com/iangregsondev/deblockprocessor
 go 1.23.2
 
 require (
+	github.com/avast/retry-go/v4 v4.6.0
 	github.com/ggwhite/go-masker/v2 v2.1.0
 	github.com/go-playground/validator/v10 v10.22.1
 	github.com/joho/godotenv v1.5.1
