@@ -74,3 +74,31 @@ func (p *Provider) GetBlockCount(ctx context.Context) (*response.GetBlockCountRe
 
 	return &resp, nil
 }
+
+func (p *Provider) GetBlock(ctx context.Context, blockHash string) (*response.GetBlockResponse, error) {
+	result, err := p.rpcClient.Request(ctx, "getblock", []interface{}{blockHash})
+	if err != nil {
+		return nil, fmt.Errorf("failed to get block: %w", err)
+	}
+
+	var resp response.GetBlockResponse
+	if err := json.Unmarshal(result, &resp); err != nil {
+		return nil, fmt.Errorf("failed to parse block: %w", err)
+	}
+
+	return &resp, nil
+}
+
+func (p *Provider) GetRawTransaction(ctx context.Context, txID string, verbose bool) (*response.GetRawTransactionResponse, error) {
+	result, err := p.rpcClient.Request(ctx, "getrawtransaction", []interface{}{txID, verbose})
+	if err != nil {
+		return nil, fmt.Errorf("failed to get block: %w", err)
+	}
+
+	var resp response.GetRawTransactionResponse
+	if err := json.Unmarshal(result, &resp); err != nil {
+		return nil, fmt.Errorf("failed to parse block: %w", err)
+	}
+
+	return &resp, nil
+}

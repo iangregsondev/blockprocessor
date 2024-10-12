@@ -1,12 +1,22 @@
 version: '3'
 
 tasks:
-  start:bitcoin-precessor:
-    desc: Start the Bitcoin processor
+  start:bitcoin-block-processor:
+    desc: Start the Bitcoin block processor
     cmds:
-      - task: build:bitcoin-precessor
-      - ./build/services/bitcoin-processor/bitcoin-processor --config ./dev/config/bitcoin-processor --env ./dev/config
-  build:bitcoin-precessor:
-    desc: Build the Bitcoin processor
+      - task: build:bitcoin-block-processor
+      - ./build/services/bitcoin-block-processor/bitcoin-block-processor --config ./dev/config/bitcoin-block-processor --env ./dev/config
+  build:bitcoin-block-processor:
+    desc: Build the Bitcoin block processor
     cmds:
-      - go build -o ./build/services/bitcoin-processor/bitcoin-processor ./cmd/bitcoinprocessor/main.go
+      - go build -o ./build/services/bitcoin-block-processor/bitcoin-block-processor ./cmd/bitcoin/blockprocessor/main.go
+
+  start:bitcoin-transaction-processor:
+    desc: Start the Bitcoin transaction processor
+    cmds:
+      - task: build:bitcoin-transaction-processor
+      - ./build/services/bitcoin-transaction-processor/bitcoin-transaction-processor --config ./dev/config/bitcoin-transaction-processor --env ./dev/config
+  build:bitcoin-transaction-processor:
+    desc: Build the Bitcoin transaction processor
+    cmds:
+      - go build -o ./build/services/bitcoin-transaction-processor/bitcoin-transaction-processor ./cmd/bitcoin/transactionprocessor/main.go
