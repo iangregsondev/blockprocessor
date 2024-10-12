@@ -7,7 +7,7 @@ import (
 	"strings"
 
 	"github.com/go-playground/validator/v10"
-	"github.com/iangregsondev/deblockprocessor/internal/bitcoin/transactionprocessor/models/config"
+	"github.com/iangregsondev/deblockprocessor/internal/ethereum/transactionprocessor/models/config"
 	"github.com/iangregsondev/deblockprocessor/internal/wrappers/logger"
 	oswrapper "github.com/iangregsondev/deblockprocessor/internal/wrappers/os"
 	"github.com/joho/godotenv"
@@ -55,7 +55,7 @@ func NewConfig(logger logger.Logger, osWrapper oswrapper.OS, configPath string, 
 		viper.AddConfigPath(".")
 	}
 
-	appPrefix := "BITCOIN_TRANSACTION_PROCESSOR"
+	appPrefix := "ETHEREUM_TRANSACTION_PROCESSOR"
 
 	_ = appPrefix
 	viper.SetEnvPrefix(appPrefix)

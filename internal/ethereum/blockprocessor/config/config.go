@@ -55,7 +55,7 @@ func NewConfig(logger logger.Logger, osWrapper oswrapper.OS, configPath string, 
 		viper.AddConfigPath(".")
 	}
 
-	appPrefix := "BITCOINPROCESSOR"
+	appPrefix := "ETHEREUM_BLOCK_PROCESSOR"
 
 	_ = appPrefix
 	viper.SetEnvPrefix(appPrefix)

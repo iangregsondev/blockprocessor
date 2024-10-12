@@ -6,8 +6,8 @@ import (
 	"os"
 
 	"github.com/ggwhite/go-masker/v2"
-	"github.com/iangregsondev/deblockprocessor/internal/bitcoin/transactionprocessor/config"
-	"github.com/iangregsondev/deblockprocessor/internal/bitcoin/transactionprocessor/di"
+	"github.com/iangregsondev/deblockprocessor/internal/ethereum/transactionprocessor/config"
+	"github.com/iangregsondev/deblockprocessor/internal/ethereum/transactionprocessor/di"
 	iowrapper "github.com/iangregsondev/deblockprocessor/internal/wrappers/io"
 	loggerwrapper "github.com/iangregsondev/deblockprocessor/internal/wrappers/logger"
 	oswrapper "github.com/iangregsondev/deblockprocessor/internal/wrappers/os"
@@ -21,7 +21,7 @@ var (
 
 func main() {
 	// Define the app name for logger
-	appName := "bitcoin-transaction-processor"
+	appName := "ethereum-transaction-processor"
 
 	// Create a new slog.Logger
 	var logLevel slog.LevelVar
@@ -53,8 +53,8 @@ func main() {
 
 	// Create a new Cobra command
 	var rootCmd = &cobra.Command{
-		Use:          "bitcoin-transaction-processor",
-		Short:        "Bitcoin transaction processor",
+		Use:          "ethereum-transaction-processor",
+		Short:        "Ethereum transaction processor",
 		SilenceUsage: true,
 		RunE: func(_ *cobra.Command, _ []string) error {
 			// Initialize the config

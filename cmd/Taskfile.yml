@@ -25,10 +25,6 @@ tasks:
     desc: Build the Bitcoin transaction processor
     cmds:
       - go build -o ./build/services/bitcoin-transaction-processor/bitcoin-transaction-processor ./cmd/bitcoin/transactionprocessor/main.go
-  delete:database:bitcoin-transaction-processor:
-    desc: Delete the Bitcoin transaction processor database
-    cmds:
-      - rm -f ./dev/data/bitcoin-transaction-processor/bitcoin-transaction-processor.db
 
   # Ethereum        
   start:ethereum-block-processor:
@@ -44,6 +40,16 @@ tasks:
     desc: Delete the Ethereum block processor database
     cmds:
       - rm -f ./dev/data/ethereum-block-processor/ethereum-block-processor.db
+
+  start:ethereum-transaction-processor:
+    desc: Start the Ethereum transaction processor
+    cmds:
+      - task: build:ethereum-transaction-processor
+      - ./build/services/ethereum-transaction-processor/ethereum-transaction-processor --config ./dev/config/ethereum-transaction-processor --env ./dev/config
+  build:ethereum-transaction-processor:
+    desc: Build the Ethereum transaction processor
+    cmds:
+      - go build -o ./build/services/ethereum-transaction-processor/ethereum-transaction-processor ./cmd/ethereum/transactionprocessor/main.go
         
   # Common
   start:all:
@@ -52,10 +58,10 @@ tasks:
       - task: start:bitcoin-block-processor
       - task: start:bitcoin-transaction-processor
       - task: start:ethereum-block-processor
+      - task: start:ethereum-transaction-processor        
   
   delete:database:all:
     desc: Delete all databases
     cmds:
       - task: delete:database:bitcoin-block-processor
-      - task: delete:database:bitcoin-transaction-processor
       - task: delete:database:ethereum-block-processor        

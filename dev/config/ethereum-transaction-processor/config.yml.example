@@ -1,0 +1,12 @@
+kafka:
+  broker: "kafka:9092"
+  block_topic: "bitcoin-blocks"
+  block_consumer_group: "bitcoin-block-consumer"
+  transaction_topic: "bitcoin-transactions"
+
+connection:
+  rpc_url: "https://svc.blockdaemon.com/bitcoin/mainnet/native/"
+  api_key: ""
+
+worker:
+  total: 2
