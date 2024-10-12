@@ -8,8 +8,9 @@ import (
 	"github.com/ggwhite/go-masker/v2"
 	"github.com/iangregsondev/deblockprocessor/internal/bitcoin/transactionprocessor/config"
 	"github.com/iangregsondev/deblockprocessor/internal/bitcoin/transactionprocessor/di"
+	iowrapper "github.com/iangregsondev/deblockprocessor/internal/wrappers/io"
+	loggerwrapper "github.com/iangregsondev/deblockprocessor/internal/wrappers/logger"
 	oswrapper "github.com/iangregsondev/deblockprocessor/internal/wrappers/os"
-	loggerwrapper "github.com/iangregsondev/deblockprocessor/pkg/logger"
 	"github.com/spf13/cobra"
 )
 
@@ -19,20 +20,34 @@ var (
 )
 
 func main() {
-	// Create a new slog.Logger with the desired configuration
+	// Define the app name for logger
+	appName := "bitcoin-transaction-processor"
+
+	// Create a new slog.Logger
+	var logLevel slog.LevelVar
+
+	logLevel.Set(slog.LevelInfo)
 	slogLogger := slog.New(
 		slog.NewTextHandler(
 			os.Stdout, &slog.HandlerOptions{
-				// TODO: Bring over the log level from the config!
-				Level: slog.LevelDebug,
+				Level: &logLevel,
+				ReplaceAttr: func(_ []string, a slog.Attr) slog.Attr {
+					if a.Key == slog.TimeKey {
+						// Add the app name prefix at the start of the log message
+						return slog.Attr{Key: "app", Value: slog.StringValue(appName)}
+					}
+
+					return a
+				},
 			},
 		),
 	)
 
-	logger := loggerwrapper.NewSlogWrapper(slogLogger)
+	logger := loggerwrapper.NewSlogWrapper(slogLogger, &logLevel)
 
-	// Create new wrapper for OS
+	// Create wrappers
 	osWrapper := oswrapper.NewOSWrapper()
+	ioWrapper := iowrapper.NewIOWrapper()
 
 	mask := masker.NewMaskerMarshaler()
 
@@ -48,7 +63,7 @@ func main() {
 				return fmt.Errorf("failed to create new config: %w", err)
 			}
 
-			app, err := di.NewDI(logger, mask, osWrapper, cfg)
+			app, err := di.NewDI(logger, mask, ioWrapper, osWrapper, cfg)
 			if err != nil {
 				return fmt.Errorf("failed to create new DI: %w", err)
 			}

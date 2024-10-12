@@ -7,9 +7,9 @@ import (
 	"sync"
 
 	"github.com/iangregsondev/deblockprocessor/internal/adapters/kafka"
+	"github.com/iangregsondev/deblockprocessor/internal/wrappers/logger"
 	"github.com/iangregsondev/deblockprocessor/pkg/blockchainproviders/bitcoin"
 	"github.com/iangregsondev/deblockprocessor/pkg/blockchainproviders/bitcoin/models/response"
-	"github.com/iangregsondev/deblockprocessor/pkg/logger"
 )
 
 type Service struct {

@@ -7,7 +7,7 @@ import (
 	"strings"
 
 	"github.com/go-playground/validator/v10"
-	"github.com/iangregsondev/deblockprocessor/internal/bitcoin/blockprocessor/models/config"
+	"github.com/iangregsondev/deblockprocessor/internal/ethereum/blockprocessor/models/config"
 	"github.com/iangregsondev/deblockprocessor/internal/wrappers/logger"
 	oswrapper "github.com/iangregsondev/deblockprocessor/internal/wrappers/os"
 	"github.com/joho/godotenv"

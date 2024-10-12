@@ -10,8 +10,8 @@ import (
 
 	"github.com/iangregsondev/deblockprocessor/internal/adapters/kafka"
 	"github.com/iangregsondev/deblockprocessor/internal/bitcoin/blockprocessor/repository/block"
+	"github.com/iangregsondev/deblockprocessor/internal/wrappers/logger"
 	"github.com/iangregsondev/deblockprocessor/pkg/blockchainproviders/bitcoin"
-	"github.com/iangregsondev/deblockprocessor/pkg/logger"
 )
 
 type Service struct {
@@ -187,6 +187,8 @@ func (b *Service) pollBlockchain(ctx context.Context, heightCh chan int) error {
 	if err != nil {
 		return fmt.Errorf("error marshalling block header: %w", err)
 	}
+
+	b.logger.Info("Publishing block to Kafka", "topic", b.kafkaTopic, "height", b.height, "hash", header.Result.Hash)
 
 	err = b.kafkaAdapter.PublishMessage(ctx, b.kafkaTopic, []byte(header.Result.Hash), value)
 	if err != nil {

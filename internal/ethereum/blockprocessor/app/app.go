@@ -7,9 +7,9 @@ import (
 	"syscall"
 
 	"github.com/ggwhite/go-masker/v2"
-	"github.com/iangregsondev/deblockprocessor/internal/bitcoin/blockprocessor/models/config"
-	"github.com/iangregsondev/deblockprocessor/internal/bitcoin/blockprocessor/services/blockchain"
-	"github.com/iangregsondev/deblockprocessor/internal/bitcoin/blockprocessor/services/database"
+	"github.com/iangregsondev/deblockprocessor/internal/ethereum/blockprocessor/models/config"
+	"github.com/iangregsondev/deblockprocessor/internal/ethereum/blockprocessor/services/blockchain"
+	"github.com/iangregsondev/deblockprocessor/internal/ethereum/blockprocessor/services/database"
 	"github.com/iangregsondev/deblockprocessor/internal/signalutils"
 	"github.com/iangregsondev/deblockprocessor/internal/wrappers/logger"
 	oswrapper "github.com/iangregsondev/deblockprocessor/internal/wrappers/os"
@@ -59,15 +59,15 @@ func (a *App) Run() error {
 		return fmt.Errorf("failed to setup the database: %w", err)
 	}
 
-	heightCh := make(chan int)
+	blockNumberCh := make(chan int64)
 
 	// Start services
-	err = a.blockchainService.StartHeightWorker(ctx, &wg, heightCh)
+	err = a.blockchainService.StartCurrentBlockNumberWorker(ctx, &wg, blockNumberCh)
 	if err != nil {
 		return fmt.Errorf("failed to start height worker: %w", err)
 	}
 
-	err = a.blockchainService.StartBlockWorker(ctx, &wg, heightCh)
+	err = a.blockchainService.StartBlockWorker(ctx, &wg, blockNumberCh)
 	if err != nil {
 		return fmt.Errorf("failed to start block worker: %w", err)
 	}

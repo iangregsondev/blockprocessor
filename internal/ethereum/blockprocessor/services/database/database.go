@@ -3,7 +3,7 @@ package database
 import (
 	"fmt"
 
-	"github.com/iangregsondev/deblockprocessor/internal/bitcoin/blockprocessor/adapters/sqlite"
+	"github.com/iangregsondev/deblockprocessor/internal/ethereum/blockprocessor/adapters/sqlite"
 )
 
 type Service struct {
