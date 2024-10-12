@@ -10,7 +10,7 @@ tasks:
   build:bitcoin-block-processor:
     desc: Build the Bitcoin block processor
     cmds:
-      - go build -o ./build/services/bitcoin-block-processor/bitcoin-block-processor ./cmd/bitcoin/blockprocessor/main.go
+      - CGO_ENABLED=1 go build -o ./build/services/bitcoin-block-processor/bitcoin-block-processor ./cmd/bitcoin/blockprocessor/main.go
   delete:database:bitcoin-block-processor:
     desc: Delete the Bitcoin block processor database
     cmds:
@@ -24,7 +24,7 @@ tasks:
   build:bitcoin-transaction-processor:
     desc: Build the Bitcoin transaction processor
     cmds:
-      - go build -o ./build/services/bitcoin-transaction-processor/bitcoin-transaction-processor ./cmd/bitcoin/transactionprocessor/main.go
+      - CGO_ENABLED=0 go build -o ./build/services/bitcoin-transaction-processor/bitcoin-transaction-processor ./cmd/bitcoin/transactionprocessor/main.go
 
   # Ethereum        
   start:ethereum-block-processor:
@@ -35,7 +35,7 @@ tasks:
   build:ethereum-block-processor:
     desc: Build the Ethereum block processor
     cmds:
-      - go build -o ./build/services/ethereum-block-processor/ethereum-block-processor ./cmd/ethereum/blockprocessor/main.go
+      - CGO_ENABLED=1 go build -o ./build/services/ethereum-block-processor/ethereum-block-processor ./cmd/ethereum/blockprocessor/main.go
   delete:database:ethereum-block-processor:
     desc: Delete the Ethereum block processor database
     cmds:
@@ -49,7 +49,7 @@ tasks:
   build:ethereum-transaction-processor:
     desc: Build the Ethereum transaction processor
     cmds:
-      - go build -o ./build/services/ethereum-transaction-processor/ethereum-transaction-processor ./cmd/ethereum/transactionprocessor/main.go
+      - CGO_ENABLED=0 go build -o ./build/services/ethereum-transaction-processor/ethereum-transaction-processor ./cmd/ethereum/transactionprocessor/main.go
 
   # Solana        
   start:solana-block-processor:
@@ -60,7 +60,7 @@ tasks:
   build:solana-block-processor:
     desc: Build the Solana block processor
     cmds:
-      - go build -o ./build/services/solana-block-processor/solana-block-processor ./cmd/solana/blockprocessor/main.go
+      - CGO_ENABLED=1 go build -o ./build/services/solana-block-processor/solana-block-processor ./cmd/solana/blockprocessor/main.go
   delete:database:solana-block-processor:
     desc: Delete the Solana block processor database
     cmds:
@@ -74,7 +74,7 @@ tasks:
   build:solana-transaction-processor:
     desc: Build the Solana transaction processor
     cmds:
-      - go build -o ./build/services/solana-transaction-processor/solana-transaction-processor ./cmd/solana/transactionprocessor/main.go
+      - CGO_ENABLED=0 go build -o ./build/services/solana-transaction-processor/solana-transaction-processor ./cmd/solana/transactionprocessor/main.go
   
   # Common
   start:all:
@@ -84,8 +84,9 @@ tasks:
       - task: start:bitcoin-transaction-processor
       - task: start:ethereum-block-processor
       - task: start:ethereum-transaction-processor   
-      - task: start:solana-block-processor        
-  
+      - task: start:solana-block-processor
+      - task: start:solana-transaction-processor
+    
   delete:database:all:
     desc: Delete all databases
     cmds:

@@ -6,3 +6,9 @@ type GetBlockOptions struct {
 	Rewards                        bool
 	MaxSupportedTransactionVersion int
 }
+
+type GetTransactionOptions struct {
+	Commitment                     string
+	Encoding                       string
+	MaxSupportedTransactionVersion int
+}

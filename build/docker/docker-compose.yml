@@ -48,7 +48,7 @@ services:
     command: ["--config", "./config"]
     volumes:
       - ../../dev/config/ethereum-block-processor:/app/config
-      - ../../dev/data/ethereum-block-processor:/dev/data/bitcoin-block-processor
+      - ../../dev/data/ethereum-block-processor:/dev/data/ethereum-block-processor
     networks:
       - deblock-external-network
 
@@ -64,5 +64,37 @@ services:
     command: ["--config", "./config"]
     volumes:
       - ../../dev/config/ethereum-transaction-processor:/app/config
+    networks:
+      - deblock-external-network
+
+  # Solana
+  solana-block-processor:
+    build:
+      context: ../../
+      dockerfile: build/docker/solana/block-processor/Dockerfile
+    image: solana-block-processor:latest
+    restart: unless-stopped
+    env_file:
+      - ../../dev/config/.env.local
+    #      - ../../dev/config/solana-block-processor/.env.local
+    command: ["--config", "./config"]
+    volumes:
+      - ../../dev/config/solana-block-processor:/app/config
+      - ../../dev/data/solana-block-processor:/dev/data/solana-block-processor
+    networks:
+      - deblock-external-network
+
+  solana-transaction-processor:
+    build:
+      context: ../../
+      dockerfile: build/docker/solana/transaction-processor/Dockerfile
+    image: solana-transaction-processor:latest
+    restart: unless-stopped
+    env_file:
+      - ../../dev/config/.env.local
+    #      - ../../dev/config/solana-transaction-processor/.env.local
+    command: ["--config", "./config"]
+    volumes:
+      - ../../dev/config/solana-transaction-processor:/app/config
     networks:
       - deblock-external-network

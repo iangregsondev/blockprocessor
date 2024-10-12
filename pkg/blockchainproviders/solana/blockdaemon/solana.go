@@ -83,29 +83,49 @@ func (p *Provider) GetBlock(ctx context.Context, blockNumber int64, options *req
 	return &resp, nil
 }
 
-func (p *Provider) GetBlockByHash(ctx context.Context, blockHash string, fullTransaction bool) (*response.BlockByHashResponse, error) {
-	result, err := p.rpcClient.Request(ctx, "eth_getBlockByHash", []interface{}{blockHash, fullTransaction})
+func (p *Provider) GetTransaction(
+	ctx context.Context, transactionSignature string, options *request.GetTransactionOptions,
+) (*response.TransactionResponse, error) {
+	// Set default values
+	defaultOptions := request.GetTransactionOptions{
+		Commitment:                     "finalized",
+		Encoding:                       "json",
+		MaxSupportedTransactionVersion: 1,
+	}
+
+	// If options are provided, overwrite default values with what is passed in
+	if options != nil {
+		if options.Commitment != "" {
+			defaultOptions.Commitment = options.Commitment
+		}
+
+		if options.Encoding != "" {
+			defaultOptions.Encoding = options.Encoding
+		}
+
+		if options.MaxSupportedTransactionVersion != 0 {
+			defaultOptions.MaxSupportedTransactionVersion = options.MaxSupportedTransactionVersion
+		}
+	}
+
+	// Prepare the request params for Solana's getTransaction method
+	params := []interface{}{
+		transactionSignature,
+		map[string]interface{}{
+			"commitment":                     defaultOptions.Commitment,
+			"encoding":                       defaultOptions.Encoding,
+			"maxSupportedTransactionVersion": defaultOptions.MaxSupportedTransactionVersion,
+		},
+	}
+
+	result, err := p.rpcClient.Request(ctx, "getTransaction", params)
 	if err != nil {
-		return nil, fmt.Errorf("failed to get block by hash: %w", err)
+		return nil, fmt.Errorf("failed to get transaction: %w", err)
 	}
 
-	var resp response.BlockByHashResponse
+	var resp response.TransactionResponse
 	if err := json.Unmarshal(result, &resp); err != nil {
-		return nil, fmt.Errorf("failed to parse block by hash: %w", err)
-	}
-
-	return &resp, nil
-}
-
-func (p *Provider) GetTransactionByHash(ctx context.Context, transactionHash string) (*response.TransactionByHashResponse, error) {
-	result, err := p.rpcClient.Request(ctx, "eth_getTransactionByHash", []interface{}{transactionHash})
-	if err != nil {
-		return nil, fmt.Errorf("failed to get transaction by hash: %w", err)
-	}
-
-	var resp response.TransactionByHashResponse
-	if err := json.Unmarshal(result, &resp); err != nil {
-		return nil, fmt.Errorf("failed to parse transaction by hash: %w", err)
+		return nil, fmt.Errorf("failed to parse transaction: %w", err)
 	}
 
 	return &resp, nil
