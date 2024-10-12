@@ -2,7 +2,9 @@ version: '3'
 
 includes:
   app:
-    taskfile: ./cmd/Taskfile.yml  
+    taskfile: ./cmd/Taskfile.yml
+  build:
+    taskfile: ./build/TaskfileDocker.yml
   common:
     taskfile: ./TaskfileCommon.yml
   infra:

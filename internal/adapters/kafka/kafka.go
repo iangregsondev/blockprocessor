@@ -2,24 +2,36 @@ package kafka
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"log"
 	"sync"
 
+	"github.com/iangregsondev/deblockprocessor/pkg/logger"
 	"github.com/segmentio/kafka-go"
 )
 
+// Define a struct to represent the message
+type Message struct {
+	Topic string
+	Key   []byte
+	Value []byte
+}
+
 // Client is the struct for handling Client connections and operations
 type Client struct {
+	logger        logger.Logger
 	brokerAddress string
-	writers       map[string]*kafka.Writer
-	readers       map[string]*kafka.Reader
-	mutex         sync.Mutex
+
+	writers map[string]*kafka.Writer
+	readers map[string]*kafka.Reader
+	mutex   sync.Mutex
 }
 
 // NewClient initializes the Client with the broker address
-func NewClient(brokerAddress string) Kafka {
+func NewClient(logger logger.Logger, brokerAddress string) Kafka {
 	return &Client{
+		logger:        logger,
 		brokerAddress: brokerAddress,
 		writers:       make(map[string]*kafka.Writer),
 		readers:       make(map[string]*kafka.Reader),
@@ -53,17 +65,18 @@ func (c *Client) PublishMessage(ctx context.Context, topic string, key, value []
 		return fmt.Errorf("failed to write message to topic %s: %w", topic, err)
 	}
 
-	log.Printf("message sent successfully to topic %s", topic)
+	c.logger.Debug(fmt.Sprintf("message sent successfully to topic %s", topic))
 
 	return nil
 }
 
 // Subscribe subscribes to a specific Client topic
-func (c *Client) Subscribe(ctx context.Context, topic string, processMessage func(topic string, key, value []byte)) error {
+func (c *Client) Subscribe(ctx context.Context, topic string, groupID string, processMessage func(topic string, key, value []byte)) error {
 	c.mutex.Lock()
 
 	reader, exists := c.readers[topic]
 	if !exists {
+		// TODO: These are hardcoded values, should be configurable
 		const (
 			minBytes = 10e3 // 10KB
 			maxBytes = 10e6 // 10MB
@@ -71,31 +84,44 @@ func (c *Client) Subscribe(ctx context.Context, topic string, processMessage fun
 		// Create a new reader for the topic if it doesn't exist
 		reader = kafka.NewReader(
 			kafka.ReaderConfig{
-				Brokers:   []string{c.brokerAddress},
-				Topic:     topic,
-				Partition: 0,
-				MinBytes:  minBytes,
-				MaxBytes:  maxBytes,
+				Brokers: []string{c.brokerAddress},
+				Topic:   topic,
+				// TODO choose either the groupID or Partition!
+				GroupID: groupID,
+				// Partition: 0,
+				MinBytes: minBytes,
+				MaxBytes: maxBytes,
 			},
 		)
 		c.readers[topic] = reader
 	}
 	c.mutex.Unlock()
 
+	errCh := make(chan error, 1)
+
 	go func() {
 		for {
 			msg, err := reader.ReadMessage(ctx)
 			if err != nil {
-				log.Printf("failed to read message from topic %s: %v", topic, err)
+				if errors.Is(err, context.Canceled) {
+					errCh <- nil
+
+					return
+				}
+
+				errCh <- fmt.Errorf("failed to read message from topic %s: %w", topic, err)
 
 				return
 			}
+
+			// Log the offset, partition, and other message details
+			log.Printf("Consumed message from topic %s, partition %d, offset %d", msg.Topic, msg.Partition, msg.Offset)
 
 			processMessage(msg.Topic, msg.Key, msg.Value)
 		}
 	}()
 
-	return nil
+	return <-errCh
 }
 
 // Close closes all Client connections
