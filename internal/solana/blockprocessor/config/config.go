@@ -55,9 +55,8 @@ func NewConfig(logger logger.Logger, osWrapper oswrapper.OS, configPath string, 
 		viper.AddConfigPath(".")
 	}
 
-	appPrefix := "ETHEREUM_BLOCK_PROCESSOR"
+	appPrefix := "SOLANA_BLOCK_PROCESSOR"
 
-	_ = appPrefix
 	viper.SetEnvPrefix(appPrefix)
 	viper.AutomaticEnv()
 

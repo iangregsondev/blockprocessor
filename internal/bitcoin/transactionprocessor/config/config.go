@@ -57,7 +57,6 @@ func NewConfig(logger logger.Logger, osWrapper oswrapper.OS, configPath string, 
 
 	appPrefix := "BITCOIN_TRANSACTION_PROCESSOR"
 
-	_ = appPrefix
 	viper.SetEnvPrefix(appPrefix)
 	viper.AutomaticEnv()
 
