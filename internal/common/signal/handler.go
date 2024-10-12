@@ -1,4 +1,4 @@
-package signalutils
+package signal
 
 import (
 	"context"

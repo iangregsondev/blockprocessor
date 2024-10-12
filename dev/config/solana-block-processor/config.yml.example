@@ -1,0 +1,17 @@
+polling:
+  block_interval_milliseconds: 1000
+  height_interval_milliseconds: 1000
+
+blockchain:
+  seed_block_number: 865104
+  
+database:
+  file: "dev/data/ethereum-block-processor/ethereum-block-processor.db"
+
+kafka:
+  broker: "kafka:9092"
+  topic: "ethereum-blocks"
+
+connection:
+  rpc_url: "https://svc.blockdaemon.com/ethereum/mainnet/native/"
+  api_key: ""

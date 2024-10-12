@@ -50,7 +50,32 @@ tasks:
     desc: Build the Ethereum transaction processor
     cmds:
       - go build -o ./build/services/ethereum-transaction-processor/ethereum-transaction-processor ./cmd/ethereum/transactionprocessor/main.go
-        
+
+  # Solana        
+  start:solana-block-processor:
+    desc: Start the Solana block processor
+    cmds:
+      - task: build:solana-block-processor
+      - ./build/services/solana-block-processor/solana-block-processor --config ./dev/config/solana-block-processor --env ./dev/config
+  build:solana-block-processor:
+    desc: Build the Solana block processor
+    cmds:
+      - go build -o ./build/services/solana-block-processor/solana-block-processor ./cmd/solana/blockprocessor/main.go
+  delete:database:solana-block-processor:
+    desc: Delete the Solana block processor database
+    cmds:
+      - rm -f ./dev/data/solana-block-processor/solana-block-processor.db
+
+  start:solana-transaction-processor:
+    desc: Start the Solana transaction processor
+    cmds:
+      - task: build:solana-transaction-processor
+      - ./build/services/solana-transaction-processor/solana-transaction-processor --config ./dev/config/solana-transaction-processor --env ./dev/config
+  build:solana-transaction-processor:
+    desc: Build the Solana transaction processor
+    cmds:
+      - go build -o ./build/services/solana-transaction-processor/solana-transaction-processor ./cmd/solana/transactionprocessor/main.go
+  
   # Common
   start:all:
     desc: Start all processors
@@ -58,10 +83,12 @@ tasks:
       - task: start:bitcoin-block-processor
       - task: start:bitcoin-transaction-processor
       - task: start:ethereum-block-processor
-      - task: start:ethereum-transaction-processor        
+      - task: start:ethereum-transaction-processor   
+      - task: start:solana-block-processor        
   
   delete:database:all:
     desc: Delete all databases
     cmds:
       - task: delete:database:bitcoin-block-processor
-      - task: delete:database:ethereum-block-processor        
+      - task: delete:database:ethereum-block-processor
+      - task: delete:database:solana-block-processor             

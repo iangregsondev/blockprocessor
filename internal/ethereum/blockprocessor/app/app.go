@@ -7,10 +7,10 @@ import (
 	"syscall"
 
 	"github.com/ggwhite/go-masker/v2"
+	"github.com/iangregsondev/deblockprocessor/internal/common/signal"
 	"github.com/iangregsondev/deblockprocessor/internal/ethereum/blockprocessor/models/config"
 	"github.com/iangregsondev/deblockprocessor/internal/ethereum/blockprocessor/services/blockchain"
 	"github.com/iangregsondev/deblockprocessor/internal/ethereum/blockprocessor/services/database"
-	"github.com/iangregsondev/deblockprocessor/internal/signalutils"
 	"github.com/iangregsondev/deblockprocessor/internal/wrappers/logger"
 	oswrapper "github.com/iangregsondev/deblockprocessor/internal/wrappers/os"
 )
@@ -50,7 +50,7 @@ func (a *App) Run() error {
 	defer cancel()
 
 	// Build and run the signal handler, passing the cancel function directly
-	signalHandler := signalutils.BuildSignalHandler(a.logger, cancel, syscall.SIGINT, syscall.SIGQUIT, syscall.SIGABRT, syscall.SIGTERM)
+	signalHandler := signal.BuildSignalHandler(a.logger, cancel, syscall.SIGINT, syscall.SIGQUIT, syscall.SIGABRT, syscall.SIGTERM)
 	signalHandler(ctx)
 
 	// Set up the database
