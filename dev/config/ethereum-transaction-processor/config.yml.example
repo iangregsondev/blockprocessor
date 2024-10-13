@@ -1,12 +1,20 @@
+logger:
+  level: "debug"
+  
 kafka:
   broker: "kafka:9092"
-  block_topic: "bitcoin-blocks"
-  block_consumer_group: "bitcoin-block-consumer"
-  transaction_topic: "bitcoin-transactions"
+  block_topic: "ethereum-blocks"
+  block_consumer_group: "ethereum-block-consumer"
+  transaction_topic: "ethereum-transactions"
 
 connection:
-  rpc_url: "https://svc.blockdaemon.com/bitcoin/mainnet/native/"
+  rpc_url: "https://svc.blockdaemon.com/ethereum/mainnet/native/"
   api_key: ""
 
 worker:
   total: 2
+  
+http:
+  max_retry_on_error: 10
+  retry_delay_milliseconds: 500
+  report_retry_attempts: false    
