@@ -1,9 +1,12 @@
+logger:
+  level: "debug"
+
 polling:
   block_interval_milliseconds: 1000
   height_interval_milliseconds: 1000
 
 blockchain:
-  seed_block_number: 865104
+  seed_block_number: 20947747
   
 database:
   file: "dev/data/ethereum-block-processor/ethereum-block-processor.db"
@@ -15,3 +18,8 @@ kafka:
 connection:
   rpc_url: "https://svc.blockdaemon.com/ethereum/mainnet/native/"
   api_key: ""
+
+http:
+  max_retry_on_error: 10
+  retry_delay_milliseconds: 500
+  report_retry_attempts: false  

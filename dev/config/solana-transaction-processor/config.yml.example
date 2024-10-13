@@ -1,12 +1,19 @@
+logger:
+  level: "debug"
+  
 kafka:
   broker: "kafka:9092"
-  block_topic: "bitcoin-blocks"
-  block_consumer_group: "bitcoin-block-consumer"
-  transaction_topic: "bitcoin-transactions"
+  block_topic: "solana-blocks"
+  block_consumer_group: "solana-block-consumer"
+  transaction_topic: "solana-transactions"
 
 connection:
-  rpc_url: "https://svc.blockdaemon.com/bitcoin/mainnet/native/"
+  rpc_url: "https://svc.blockdaemon.com/solana/mainnet/native/"
   api_key: ""
 
 worker:
-  total: 2
+  total: 4
+ 
+http:
+  max_retry_on_error: 5
+  retry_delay_milliseconds: 1000  

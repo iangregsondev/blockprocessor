@@ -1,12 +1,50 @@
+logger:
+  level: "info"
+
+users:
+  - name: "Binance Wallet"
+    chain: "bitcoin"
+    address: "bc1qm34lsc65zpw79lxes69zkqmk6ee3ewf0j77s3h"
+  - name: "Wrapped Ethereum"
+    chain: "ethereum"
+    address: "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"
+  - name: "Orca (SOL-USDC) Market"
+    chain: "solana"
+    address: "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"
+  
 kafka:
   broker: "kafka:9092"
-  block_topic: "bitcoin-blocks"
-  block_consumer_group: "bitcoin-block-consumer"
-  transaction_topic: "bitcoin-transactions"
+  chain_topics:
+    - chain: "bitcoin"
+      topic: "bitcoin-transactions"
+      consumer_group: "bitcoin-transaction-consumer"
+    - chain: "ethereum"
+      topic: "ethereum-transactions"
+      consumer_group: "ethereum-transaction-consumer"
+    - chain: "solana"
+      topic: "solana-transactions"
+      consumer_group: "solana-transaction-consumer"
 
 connection:
-  rpc_url: "https://svc.blockdaemon.com/bitcoin/mainnet/native/"
-  api_key: ""
-
-worker:
-  total: 2
+  bitcoin:
+    rpc_url: "https://svc.blockdaemon.com/bitcoin/mainnet/native/"
+    api_key: ""
+  ethereum:
+    rpc_url: "https://svc.blockdaemon.com/ethereum/mainnet/native/"
+    api_key: ""
+  solana:
+    rpc_url: "https://svc.blockdaemon.com/solana/mainnet/native/"
+    api_key: ""
+    
+workers:
+  - chain: "bitcoin"
+    total: 2
+  - chain: "ethereum"
+    total: 2
+  - chain: "solana"
+    total: 2
+ 
+http:
+  max_retry_on_error: 10
+  retry_delay_milliseconds: 500
+  report_retry_attempts: false  
