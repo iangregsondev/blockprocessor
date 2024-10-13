@@ -60,7 +60,7 @@ All services require some infrastructure to be running in docker, first an exter
 task infra:init-local-dev-env
 ```
 
-Then to start the services, please run the following command:
+Then to start the infrastructure, please run the following command:
 
 ```bash
 task infra:docker-up
@@ -70,6 +70,12 @@ The above docker file includes a kafka topic viewer and can be viewed in the bro
 
 The above docker file will automatically create the required topics for the services to run.
 
+
+To start all the services (processors and observers), please run the following command:
+
+```bash
+task app:start:all
+````
 
 If you prefer to run these in docker (which uses the same external network) you can run the following command:
 
