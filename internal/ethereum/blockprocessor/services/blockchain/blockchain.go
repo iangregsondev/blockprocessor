@@ -5,11 +5,11 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"strconv"
 	"sync"
 	"time"
 
 	"github.com/iangregsondev/deblockprocessor/internal/adapters/kafka"
+	"github.com/iangregsondev/deblockprocessor/internal/common/convert"
 	"github.com/iangregsondev/deblockprocessor/internal/ethereum/blockprocessor/repository/block"
 	"github.com/iangregsondev/deblockprocessor/internal/wrappers/logger"
 	"github.com/iangregsondev/deblockprocessor/pkg/blockchainproviders/ethereum"
@@ -79,7 +79,7 @@ func (b *Service) StartCurrentBlockNumberWorker(ctx context.Context, wg *sync.Wa
 					break
 				}
 
-				latestBlockNumber, err := b.convertHexToDecimal(blockNumber.Result)
+				latestBlockNumber, err := convert.HexToDecimal(blockNumber.Result)
 				if err != nil {
 					b.logger.Error("error converting hex to decimal", "hex", "blockNumber.Result", "error", err)
 
@@ -191,7 +191,7 @@ func (b *Service) pollBlockchain(ctx context.Context, blockNumberCh chan int64) 
 
 	b.logger.Info("Publishing block to Kafka", "topic", b.kafkaTopic, "height", b.currentBlockNumber, "hash", blk.Result.Hash)
 
-	err = b.kafkaAdapter.PublishMessage(ctx, b.kafkaTopic, []byte(blk.Result.Hash), value)
+	err = b.kafkaAdapter.PublishMessage(ctx, b.kafkaTopic, []byte(blk.Result.Hash), value, kafka.PublishOptions{})
 	if err != nil {
 		return fmt.Errorf("error publishing message: %w", err)
 	}
@@ -204,15 +204,4 @@ func (b *Service) pollBlockchain(ctx context.Context, blockNumberCh chan int64) 
 	blockNumberCh <- b.currentBlockNumber
 
 	return nil
-}
-
-func (b *Service) convertHexToDecimal(hex string) (*int64, error) {
-	decimal, err := strconv.ParseInt(hex, 0, 64)
-	if err != nil {
-		b.logger.Error("Error converting from hex to decimal", "hex", hex, "error", err)
-
-		return nil, err
-	}
-
-	return &decimal, nil
 }

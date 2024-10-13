@@ -4,6 +4,10 @@ tasks:
   docker-up:
     desc: Bring docker services up and detach
     cmds:
+      - docker compose -f ./docker/docker-compose.yml up -d
+  docker-up:no-detach:
+    desc: Bring docker services up in foreground    
+    cmds:
       - docker compose -f ./docker/docker-compose.yml up
   docker-down:
     desc: Take docker services down

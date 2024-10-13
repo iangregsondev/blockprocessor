@@ -26,6 +26,18 @@ tasks:
     cmds:
       - CGO_ENABLED=0 go build -o ./build/services/bitcoin-transaction-processor/bitcoin-transaction-processor ./cmd/bitcoin/transactionprocessor/main.go
 
+  start:bitcoin:all:
+    desc: Start all Bitcoin processors
+    deps:
+      - task: start:bitcoin-block-processor
+      - task: start:bitcoin-transaction-processor
+  
+  start:bitcoin:all:except-observer:
+    desc: Start all Bitcoin processors but not observer
+    deps:
+      - task: start:bitcoin-block-processor
+      - task: start:bitcoin-transaction-processor
+
   # Ethereum        
   start:ethereum-block-processor:
     desc: Start the Ethereum block processor
@@ -50,6 +62,18 @@ tasks:
     desc: Build the Ethereum transaction processor
     cmds:
       - CGO_ENABLED=0 go build -o ./build/services/ethereum-transaction-processor/ethereum-transaction-processor ./cmd/ethereum/transactionprocessor/main.go
+
+  start:ethereum:all:
+    desc: Start all Ethereum processors
+    deps:
+      - task: start:ethereum-block-processor
+      - task: start:ethereum-transaction-processor
+  
+  start:ethereum:all:except-observer:
+    desc: Start all Ethereum processors but not observer
+    deps:
+      - task: start:ethereum-block-processor
+      - task: start:ethereum-transaction-processor
 
   # Solana        
   start:solana-block-processor:
@@ -76,9 +100,21 @@ tasks:
     cmds:
       - CGO_ENABLED=0 go build -o ./build/services/solana-transaction-processor/solana-transaction-processor ./cmd/solana/transactionprocessor/main.go
   
+  start:solana:all:
+    desc: Start all Solana processors
+    deps:
+      - task: start:solana-block-processor
+      - task: start:solana-transaction-processor
+  
+  start:solana:all:except-observer:
+    desc: Start all Solana processors but not observer
+    deps:
+      - task: start:solana-block-processor
+      - task: start:solana-transaction-processor
+  
   # Common
   start:all:
-    desc: Start all processors
+    desc: Start all processors and observer
     deps:
       - task: start:bitcoin-block-processor
       - task: start:bitcoin-transaction-processor
@@ -86,6 +122,17 @@ tasks:
       - task: start:ethereum-transaction-processor   
       - task: start:solana-block-processor
       - task: start:solana-transaction-processor
+
+  start:all:except-observer:
+    desc: Start all processors but not observer
+    deps:
+      - task: start:bitcoin-block-processor
+      - task: start:bitcoin-transaction-processor
+      - task: start:ethereum-block-processor
+      - task: start:ethereum-transaction-processor
+      - task: start:solana-block-processor
+      - task: start:solana-transaction-processor
+
     
   delete:database:all:
     desc: Delete all databases

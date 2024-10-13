@@ -24,8 +24,9 @@ type DatabaseConfig struct {
 }
 
 type HTTPConfig struct {
-	MaxRetryOnError        int `mapstructure:"max_retry_on_error" validate:"required"`
-	RetryDelayMilliseconds int `mapstructure:"retry_delay_milliseconds" validate:"required"`
+	MaxRetryOnError        int  `mapstructure:"max_retry_on_error" validate:"required"`
+	RetryDelayMilliseconds int  `mapstructure:"retry_delay_milliseconds" validate:"required"`
+	ReportRetryAttempts    bool `mapstructure:"report_retry_attempts"`
 }
 
 type KafkaConfig struct {
