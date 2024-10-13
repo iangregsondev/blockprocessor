@@ -98,3 +98,18 @@ services:
       - ../../dev/config/solana-transaction-processor:/app/config
     networks:
       - deblock-external-network
+
+  multichain-transaction-observer:
+    build:
+      context: ../../
+      dockerfile: build/docker/multichain/transaction-observer/Dockerfile
+    image: multichain-transaction-observer:latest
+    restart: unless-stopped
+    env_file:
+      - ../../dev/config/.env.local
+    #      - ../../dev/config/multichain-transaction-observer/.env.local
+    command: ["--config", "./config"]
+    volumes:
+      - ../../dev/config/multichain-transaction-observer:/app/config
+    networks:
+      - deblock-external-network        

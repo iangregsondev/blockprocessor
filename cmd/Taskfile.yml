@@ -31,6 +31,7 @@ tasks:
     deps:
       - task: start:bitcoin-block-processor
       - task: start:bitcoin-transaction-processor
+      - task: start:multichain-transaction-observer        
   
   start:bitcoin:all:except-observer:
     desc: Start all Bitcoin processors but not observer
@@ -68,6 +69,7 @@ tasks:
     deps:
       - task: start:ethereum-block-processor
       - task: start:ethereum-transaction-processor
+      - task: start:multichain-transaction-observer        
   
   start:ethereum:all:except-observer:
     desc: Start all Ethereum processors but not observer
@@ -105,12 +107,25 @@ tasks:
     deps:
       - task: start:solana-block-processor
       - task: start:solana-transaction-processor
+      - task: start:multichain-transaction-observer              
   
   start:solana:all:except-observer:
     desc: Start all Solana processors but not observer
     deps:
       - task: start:solana-block-processor
       - task: start:solana-transaction-processor
+
+  # Multi chain
+  start:multichain-transaction-observer:
+    desc: Start the Multichain transaction observer
+    cmds:
+      - task: build:multichain-transaction-observer
+      - ./build/services/multichain-transaction-observer/multichain-transaction-observer --config ./dev/config/multichain-transaction-observer --env ./dev/config
+  
+  build:multichain-transaction-observer:
+    desc: Build the Multichain transaction observer
+    cmds:
+      - CGO_ENABLED=0 go build -o ./build/services/multichain-transaction-observer/multichain-transaction-observer ./cmd/multichain/transactionobserver/main.go
   
   # Common
   start:all:
@@ -122,6 +137,7 @@ tasks:
       - task: start:ethereum-transaction-processor   
       - task: start:solana-block-processor
       - task: start:solana-transaction-processor
+      - task: start:multichain-transaction-observer
 
   start:all:except-observer:
     desc: Start all processors but not observer

@@ -11,22 +11,23 @@ import (
 	"gorm.io/gorm/logger"
 )
 
-type DBConnection struct {
+// DatabaseProvider is a struct that holds the database connection.
+type DatabaseProvider struct {
 	osWrapper    oswrapper.OS
 	DB           *gorm.DB
 	databaseFile string
 }
 
-// NewSqliteDatabase returns an instance of DBConnection implementing the Database interface.
-func NewSqliteDatabase(osWrapper oswrapper.OS, databaseFile string) Database {
-	return &DBConnection{
+// NewDatabaseProvider returns an instance of DatabaseProvider implementing the Database interface.
+func NewDatabaseProvider(osWrapper oswrapper.OS, databaseFile string) Database {
+	return &DatabaseProvider{
 		osWrapper:    osWrapper,
 		databaseFile: databaseFile,
 	}
 }
 
 // Connect initializes the SQLite database connection.
-func (s *DBConnection) Connect() error {
+func (s *DatabaseProvider) Connect() error {
 	var err error
 
 	// Ensure the directory for the database file exists
@@ -49,11 +50,11 @@ func (s *DBConnection) Connect() error {
 }
 
 // GetDB returns the database connection.
-func (s *DBConnection) GetDB() *gorm.DB {
+func (s *DatabaseProvider) GetDB() *gorm.DB {
 	return s.DB
 }
 
 // Migrate performs the database schema migration for the Block model.
-func (s *DBConnection) Migrate() error {
+func (s *DatabaseProvider) Migrate() error {
 	return s.DB.AutoMigrate(&entities.BlockHeight{})
 }
