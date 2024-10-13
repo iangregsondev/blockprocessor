@@ -16,7 +16,4 @@ tasks:
   docker-down:
     desc: Take docker services down
     cmds:
-      - docker compose -f ./docker/docker-compose.yml down
-
-
-
+      - docker compose -f build/docker/docker-compose.yml down
