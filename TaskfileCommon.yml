@@ -4,7 +4,7 @@ tasks:
   test:
     desc: Run tests
     cmds:
-      - richgo test ./...
+      - go test ./...
   lint:
     desc: Run linters for changed files    
     cmds:

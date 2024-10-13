@@ -10,19 +10,21 @@ import (
 	"github.com/segmentio/kafka-go"
 )
 
-// Define a struct to represent the message
+// Message is the struct for handling Kafka messages
 type Message struct {
 	Topic string
 	Key   []byte
 	Value []byte
 }
 
+// SubscriptionOptions is the struct for handling subscription options
 type SubscriptionOptions struct {
 	GroupID     *string
 	Partition   *int
 	StartOffset *int64
 }
 
+// PublishOptions is the struct for handling publish options
 type PublishOptions struct {
 	Partition *int
 }

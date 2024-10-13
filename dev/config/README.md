@@ -30,9 +30,18 @@ This project uses a structured approach to manage configuration settings across 
 Environment variables specified in the env.local files follow a standard naming pattern:
 
 * Uppercase Naming: All environment variables are in uppercase.
-* Application Prefix: Each environment variable is prefixed with the application name, which is written in uppercase. For example, an app named bitcoinProcessor would have a prefix of BITCOINPROCESSOR.
+* Application Prefix: Each environment variable is prefixed with the application name, which is written in uppercase. All prefixes are listed below.
 * Section and Key Separation: The sections from the YAML file are converted into environment variable format by separating each nested level with an underscore (_).
 * Any camel-cased words from the YAML files are converted to uppercase with underscores separating each word. For instance, apiKey becomes API_KEY and rpcUrl becomes RPC_URL.
+
+prefixes:
+* Bitcoin block processor: BITCOIN_BLOCK_PROCESSOR
+* Bitcoin transaction processort: BITCOIN_TRANSACTION_PROCESSOR
+* Ethereum block processor: ETHEREUM_BLOCK_PROCESSOR
+* Ethereum transaction processor: ETHEREUM_TRANSACTION_PROCESSOR
+* Solana block processor: SOLANA_BLOCK_PROCESSOR
+* Solana transaction processor: SOLANA_TRANSACTION_PROCESSOR
+* Multichange transaction observer: MULTICHAIN_TRANSACTION_OBSERVER
 
 _For example:_
 
@@ -44,9 +53,10 @@ connection:
   api-key: "your-sensitive-api-key-here"
 ```
 
-The corresponding environment variable names would be:
-* BITCOINPROCESSOR_CONNECTION_RPC_URL
-* BITCOINPROCESSOR_CONNECTION_API_KEY
+For the Bitcoin block processor, the corresponding environment variable names would be:
+
+* BITCOIN_BLOCK_PROCESSOR_CONNECTION_RPC_URL
+* BITCOIN_BLOCK_PROCESSOR_CONNECTION_API_KEY
 
 ### Why Use env.local?
 
@@ -64,13 +74,13 @@ The env.local files allow for secure and flexible configuration management:
 1. Set an API Key in env.local:
 
     ```bash
-    BITCOINPROCESSOR_CONNECTION_API_KEY=your-sensitive-api-key-here
+    BITCOIN_BLOCK_PROCESSOR_CONNECTION_API_KEY=your-sensitive-api-key-here
     ```
 
 2. Export the Environment Variable:
 
     ```bash
-    export BITCOINPROCESSOR_CONNECTION_API_KEY=your-sensitive-api-key-here
+    export BITCOIN_BLOCK_PROCESSOR_CONNECTION_API_KEY=your-sensitive-api-key-here
     ```
 
 The env.local files provide an efficient way to manage and override environment variables, supporting a secure configuration practice for all applications.

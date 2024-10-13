@@ -42,7 +42,7 @@ func NewDI(logger logger.Logger, mask *masker.MaskerMarshaler, ioWrapper iowrapp
 	logger.SetLogLevel(level)
 
 	// instantiate adapters
-	dbAdapter := sqlite.NewSqliteDatabase(osWrapper, loadedConfig.Database.File)
+	dbAdapter := sqlite.NewDatabaseProvider(osWrapper, loadedConfig.Database.File)
 	rpcClient := rpc.NewRPC(
 		logger, ioWrapper, loadedConfig.Connection.RPCURL, loadedConfig.Connection.APIKey, loadedConfig.HTTP.MaxRetryOnError,
 		loadedConfig.HTTP.RetryDelayMilliseconds, loadedConfig.HTTP.ReportRetryAttempts,
