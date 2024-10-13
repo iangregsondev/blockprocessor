@@ -27,18 +27,20 @@ type RPC struct {
 	rpcURL string
 	apiKey string
 
-	maxRetries int
-	retryDelay time.Duration
+	maxRetries          int
+	retryDelay          time.Duration
+	reportRetryAttempts bool
 }
 
-func NewRPC(logger logger.Logger, ioWrapper iowrapper.IO, rpcURL string, apiKey string, maxRetryOnError int, retryDelayMs int) *RPC {
+func NewRPC(logger logger.Logger, ioWrapper iowrapper.IO, rpcURL string, apiKey string, maxRetryOnError int, retryDelayMs int, reportRetryAttempts bool) *RPC {
 	return &RPC{
-		logger:     logger,
-		ioWrapper:  ioWrapper,
-		rpcURL:     rpcURL,
-		apiKey:     apiKey,
-		maxRetries: maxRetryOnError,
-		retryDelay: time.Duration(retryDelayMs) * time.Millisecond,
+		logger:              logger,
+		ioWrapper:           ioWrapper,
+		rpcURL:              rpcURL,
+		apiKey:              apiKey,
+		maxRetries:          maxRetryOnError,
+		retryDelay:          time.Duration(retryDelayMs) * time.Millisecond,
+		reportRetryAttempts: reportRetryAttempts,
 	}
 }
 
@@ -134,7 +136,7 @@ func (r *RPC) Request(ctx context.Context, method string, params []interface{}) 
 				return fmt.Errorf("failed to read response body: %w", err)
 			}
 
-			if currentRetries > 0 {
+			if currentRetries > 0 && r.reportRetryAttempts {
 				r.logger.Warn("Retry successful, recovered", "totalAttempts", currentRetries)
 			}
 
@@ -147,7 +149,9 @@ func (r *RPC) Request(ctx context.Context, method string, params []interface{}) 
 		retry.Context(ctx),
 		retry.OnRetry(
 			func(n uint, err error) {
-				r.logger.Warn("Retry", "attempt", n, "error", err)
+				if r.reportRetryAttempts {
+					r.logger.Warn("Retry", "attempt", n, "error", err)
+				}
 
 				currentRetries++
 			},

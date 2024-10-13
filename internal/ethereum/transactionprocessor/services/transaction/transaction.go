@@ -20,7 +20,7 @@ type Service struct {
 	rpcURL                string
 	apiKey                string
 	kafkaBlockTopic       string
-	kafkaBlockConsumer    string
+	kafkaBlockConsumer    *string
 	kafkaTransactionTopic string
 }
 
@@ -28,7 +28,7 @@ func NewService(
 	logger logger.Logger,
 	kafkaAdapter kafka.Kafka,
 	bcProvider ethereum.Provider,
-	rpcURL string, apiKey string, kafkaBlockTopic string, kafkaBlockConsumer string, kafkaTransactionTopic string,
+	rpcURL string, apiKey string, kafkaBlockTopic string, kafkaBlockConsumer *string, kafkaTransactionTopic string,
 ) *Service {
 	return &Service{
 		logger:                logger,
@@ -58,10 +58,13 @@ func (b *Service) StartTransactionQueueWorker(ctx context.Context, wg *sync.Wait
 				return
 			default:
 				err := b.kafkaAdapter.Subscribe(
-					ctx, b.kafkaBlockTopic, b.kafkaBlockConsumer, func(topic string, key, value []byte) {
+					ctx, b.kafkaBlockTopic, func(topic string, key, value []byte) {
 						// Process the message here
 						b.logger.Info("Received message", "topic", topic, "key", key)
 						kafkaMessageCh <- kafka.Message{Topic: topic, Key: key, Value: value}
+					},
+					kafka.SubscriptionOptions{
+						GroupID: b.kafkaBlockConsumer,
 					},
 				)
 				if err != nil {
@@ -138,7 +141,7 @@ func (b *Service) processTransactions(ctx context.Context, workerID int, msg kaf
 			return fmt.Errorf("worker %d: error marshalling raw transaction: %w", workerID, err)
 		}
 
-		err = b.kafkaAdapter.PublishMessage(ctx, b.kafkaTransactionTopic, []byte(tx.Hash), value)
+		err = b.kafkaAdapter.PublishMessage(ctx, b.kafkaTransactionTopic, []byte(tx.Hash), value, kafka.PublishOptions{})
 		if err != nil {
 			return fmt.Errorf("worker %d: error publishing message: %w", workerID, err)
 		}

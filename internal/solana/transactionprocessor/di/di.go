@@ -41,7 +41,7 @@ func NewDI(logger logger.Logger, mask *masker.MaskerMarshaler, ioWrapper iowrapp
 	// instantiate adapters
 	rpcClient := rpc.NewRPC(
 		logger, ioWrapper, loadedConfig.Connection.RPCURL, loadedConfig.Connection.APIKey, loadedConfig.HTTP.MaxRetryOnError,
-		loadedConfig.HTTP.RetryDelayMilliseconds,
+		loadedConfig.HTTP.RetryDelayMilliseconds, loadedConfig.HTTP.ReportRetryAttempts,
 	)
 	kafkaAdapter := kafka.NewClient(logger, loadedConfig.Kafka.Broker)
 

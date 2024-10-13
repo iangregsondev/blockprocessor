@@ -190,7 +190,7 @@ func (b *Service) pollBlockchain(ctx context.Context, heightCh chan int) error {
 
 	b.logger.Info("Publishing block to Kafka", "topic", b.kafkaTopic, "height", b.height, "hash", header.Result.Hash)
 
-	err = b.kafkaAdapter.PublishMessage(ctx, b.kafkaTopic, []byte(header.Result.Hash), value)
+	err = b.kafkaAdapter.PublishMessage(ctx, b.kafkaTopic, []byte(header.Result.Hash), value, kafka.PublishOptions{})
 	if err != nil {
 		return fmt.Errorf("error publishing message: %w", err)
 	}

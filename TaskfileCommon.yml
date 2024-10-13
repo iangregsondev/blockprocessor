@@ -2,18 +2,23 @@ version: '3'
 
 tasks:
   test:
+    desc: Run tests
     cmds:
       - richgo test ./...
   lint:
+    desc: Run linters for changed files    
     cmds:
       - golangci-lint run --new-from-rev HEAD
   lint:allfiles:
+    desc: Run linters for all files    
     cmds:
       - golangci-lint run
   precommit:
+    desc: Run pre-commit checks
     cmds:
       - pre-commit run --all-files  
   clean-mocks:
+    desc: Remove mock files    
     cmds:
       - echo "Removing mock files"
       - >-
@@ -23,28 +28,10 @@ tasks:
         sudo find . -type f -name 'mock_*.go' -exec rm {} +
         {{end}}         
   gen-mocks:
+    desc: Generate mock files
     cmds:
-      - task: gen-mocks-windows
-      - task: gen-mocks-darwin
-      - task: gen-mocks-linux
-
-  gen-mocks-windows:
-    cmds:
-      - echo "Generating mock files for Windows"
-      - mockery
-    env:
-      GOOS: windows
-
-  gen-mocks-darwin:
-    cmds:
-      - echo "Generating mock files for Darwin"
+      - echo "Generating mock files"
       - mockery
     env:
       GOOS: darwin
 
-  gen-mocks-linux:
-    cmds:
-      - echo "Generating mock files for Linux"
-      - mockery
-    env:
-      GOOS: linux

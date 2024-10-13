@@ -14,15 +14,16 @@ type ConnectionConfig struct {
 }
 
 type HTTPConfig struct {
-	MaxRetryOnError        int `mapstructure:"max_retry_on_error" validate:"required"`
-	RetryDelayMilliseconds int `mapstructure:"retry_delay_milliseconds" validate:"required"`
+	MaxRetryOnError        int  `mapstructure:"max_retry_on_error" validate:"required"`
+	RetryDelayMilliseconds int  `mapstructure:"retry_delay_milliseconds" validate:"required"`
+	ReportRetryAttempts    bool `mapstructure:"report_retry_attempts"`
 }
 
 type KafkaConfig struct {
-	Broker             string `mapstructure:"broker" validate:"required"`
-	BlockTopic         string `mapstructure:"block_topic" validate:"required"`
-	BlockConsumerGroup string `mapstructure:"block_consumer_group" validate:"required"`
-	TransactionTopic   string `mapstructure:"transaction_topic" validate:"required"`
+	Broker             string  `mapstructure:"broker" validate:"required"`
+	BlockTopic         string  `mapstructure:"block_topic" validate:"required"`
+	BlockConsumerGroup *string `mapstructure:"block_consumer_group"`
+	TransactionTopic   string  `mapstructure:"transaction_topic" validate:"required"`
 }
 
 type LoggerConfig struct {

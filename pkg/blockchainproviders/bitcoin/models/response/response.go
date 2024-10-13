@@ -110,9 +110,12 @@ type RawTransaction struct {
 }
 
 type VIn struct {
-	Coinbase    string   `json:"coinbase"`
-	Txinwitness []string `json:"txinwitness"`
-	Sequence    int64    `json:"sequence"`
+	Coinbase    string    `json:"coinbase"`
+	Txinwitness []string  `json:"txinwitness"`
+	Sequence    int64     `json:"sequence"`
+	Txid        string    `json:"txid"`
+	Vout        int       `json:"vout"`
+	ScriptSig   ScriptSig `json:"scriptSig"`
 }
 
 type VOut struct {
@@ -127,4 +130,9 @@ type ScriptPubKey struct {
 	Hex     string `json:"hex"`
 	Address string `json:"address"`
 	Type    string `json:"type"`
+}
+
+type ScriptSig struct {
+	Asm string `json:"asm"`
+	Hex string `json:"hex"`
 }

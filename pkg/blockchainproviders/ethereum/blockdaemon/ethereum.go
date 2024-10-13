@@ -74,3 +74,17 @@ func (p *Provider) GetTransactionByHash(ctx context.Context, transactionHash str
 
 	return &resp, nil
 }
+
+func (p *Provider) GetTransactionReceipt(ctx context.Context, transactionHash string) (*response.TransactionReceiptResponse, error) {
+	result, err := p.rpcClient.Request(ctx, "eth_getTransactionReceipt", []interface{}{transactionHash})
+	if err != nil {
+		return nil, fmt.Errorf("failed to get transaction by hash: %w", err)
+	}
+
+	var resp response.TransactionReceiptResponse
+	if err := json.Unmarshal(result, &resp); err != nil {
+		return nil, fmt.Errorf("failed to parse transaction by hash: %w", err)
+	}
+
+	return &resp, nil
+}

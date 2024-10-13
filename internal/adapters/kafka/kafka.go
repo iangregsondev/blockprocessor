@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"log"
 	"sync"
 
 	"github.com/iangregsondev/deblockprocessor/internal/wrappers/logger"
@@ -16,6 +15,16 @@ type Message struct {
 	Topic string
 	Key   []byte
 	Value []byte
+}
+
+type SubscriptionOptions struct {
+	GroupID     *string
+	Partition   *int
+	StartOffset *int64
+}
+
+type PublishOptions struct {
+	Partition *int
 }
 
 // Client is the struct for handling Client connections and operations
@@ -39,7 +48,7 @@ func NewClient(logger logger.Logger, brokerAddress string) Kafka {
 }
 
 // PublishMessage sends a message to a specified Client topic
-func (c *Client) PublishMessage(ctx context.Context, topic string, key, value []byte) error {
+func (c *Client) PublishMessage(ctx context.Context, topic string, key, value []byte, options PublishOptions) error {
 	c.mutex.Lock()
 
 	writer, exists := c.writers[topic]
@@ -55,12 +64,17 @@ func (c *Client) PublishMessage(ctx context.Context, topic string, key, value []
 
 	c.mutex.Unlock()
 
-	err := writer.WriteMessages(
-		ctx, kafka.Message{
-			Key:   key,
-			Value: value,
-		},
-	)
+	message := kafka.Message{
+		Key:   key,
+		Value: value,
+	}
+
+	// Set Partition if specified in the options
+	if options.Partition != nil {
+		message.Partition = *options.Partition
+	}
+
+	err := writer.WriteMessages(ctx, message)
 	if err != nil {
 		return fmt.Errorf("failed to write message to topic %s: %w", topic, err)
 	}
@@ -71,7 +85,7 @@ func (c *Client) PublishMessage(ctx context.Context, topic string, key, value []
 }
 
 // Subscribe subscribes to a specific Client topic
-func (c *Client) Subscribe(ctx context.Context, topic string, groupID string, processMessage func(topic string, key, value []byte)) error {
+func (c *Client) Subscribe(ctx context.Context, topic string, processMessage func(topic string, key, value []byte), options SubscriptionOptions) error {
 	c.mutex.Lock()
 
 	reader, exists := c.readers[topic]
@@ -81,18 +95,30 @@ func (c *Client) Subscribe(ctx context.Context, topic string, groupID string, pr
 			minBytes = 10e3 // 10KB
 			maxBytes = 10e6 // 10MB
 		)
-		// Create a new reader for the topic if it doesn't exist
-		reader = kafka.NewReader(
-			kafka.ReaderConfig{
-				Brokers: []string{c.brokerAddress},
-				Topic:   topic,
-				// TODO choose either the groupID or Partition!
-				GroupID: groupID,
-				// Partition: 0,
-				MinBytes: minBytes,
-				MaxBytes: maxBytes,
-			},
-		)
+
+		readerConfig := kafka.ReaderConfig{
+			Brokers:  []string{c.brokerAddress},
+			Topic:    topic,
+			MinBytes: minBytes,
+			MaxBytes: maxBytes,
+		}
+
+		// Set GroupID if provided
+		if options.GroupID != nil {
+			readerConfig.GroupID = *options.GroupID
+		}
+
+		// Set Partition if provided, only if GroupID is not set
+		if options.Partition != nil && options.GroupID == nil {
+			readerConfig.Partition = *options.Partition
+		}
+
+		// Set StartOffset only if it's explicitly provided
+		if options.StartOffset != nil && options.GroupID == nil {
+			readerConfig.StartOffset = *options.StartOffset
+		}
+
+		reader = kafka.NewReader(readerConfig)
 		c.readers[topic] = reader
 	}
 	c.mutex.Unlock()
@@ -115,7 +141,7 @@ func (c *Client) Subscribe(ctx context.Context, topic string, groupID string, pr
 			}
 
 			// Log the offset, partition, and other message details
-			log.Printf("Consumed message from topic %s, partition %d, offset %d", msg.Topic, msg.Partition, msg.Offset)
+			c.logger.Debug(fmt.Sprintf("Consumed message from topic %s, partition %d, offset %d", msg.Topic, msg.Partition, msg.Offset))
 
 			processMessage(msg.Topic, msg.Key, msg.Value)
 		}
@@ -131,13 +157,13 @@ func (c *Client) Close() {
 
 	for _, writer := range c.writers {
 		if err := writer.Close(); err != nil {
-			log.Printf("failed to close writer: %v", err)
+			c.logger.Error(fmt.Sprintf("failed to close writer: %v", err))
 		}
 	}
 
 	for _, reader := range c.readers {
 		if err := reader.Close(); err != nil {
-			log.Printf("failed to close reader: %v", err)
+			c.logger.Error(fmt.Sprintf("failed to close reader: %v", err))
 		}
 	}
 }
