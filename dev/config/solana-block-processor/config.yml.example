@@ -20,5 +20,6 @@ connection:
   api_key: ""
 
 http:
-  max_retry_on_error: 5
-  retry_delay_milliseconds: 1000
+  max_retry_on_error: 10
+  retry_delay_milliseconds: 500
+  report_retry_attempts: false  
